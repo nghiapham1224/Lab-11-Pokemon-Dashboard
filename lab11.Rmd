@@ -1,0 +1,48 @@
+---
+title: "Lab 11"
+author: "Nghia Pham"
+date: "`r Sys.Date()`"
+output: flexdashboard::flex_dashboard
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(plotly)
+library(crosstalk)
+pokemon <- read_csv("pokemon.csv")
+shared_pokemon <- SharedData$new(pokemon)
+```
+
+
+SidebarName {.sidebar}
+----------------------
+```{r}
+filter_select("poke_type", "Pokemon Type", shared_pokemon, ~ `Type 1`)
+```
+
+
+Column
+-------------------------------------
+
+### Boxplot of Total Stats by Pokemon Type
+
+```{r}
+p2 <- shared_pokemon %>%
+  ggplot() +
+  geom_boxplot(aes(x = `Type 1`, y = Total, fill = `Type 1`)) +
+  labs(x = "Pokemon Type", y = "Total") +
+  theme(axis.text.x = element_text(angle = 45))
+ggplotly(p2)
+```
+
+Column
+-------------------------------------
+
+### Scatterplot of Attack vs Defense
+
+```{r}
+p <- shared_pokemon %>%
+  ggplot() +
+  geom_point(aes(x = Defense, y = Attack, color = `Type 1`))
+ggplotly(p)
+```
